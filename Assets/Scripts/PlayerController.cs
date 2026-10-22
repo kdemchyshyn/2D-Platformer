@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rigidbody;
     private PlayerInput _playerInput;
     private Collider2D _collider;
+    private int _jumpsRemaining = 2;
 
     private void Awake()
     {
@@ -61,6 +62,11 @@ public class PlayerController : MonoBehaviour
 
         Vector2 velocity = _rigidbody.linearVelocity;
         bool isGrounded = IsGrounded();
+        if (isGrounded)
+        {
+            _jumpsRemaining = 2;
+        }
+
         float movementSpeed = isGrounded ? moveSpeed : moveSpeed * airMoveSpeedMultiplier;
         float targetSpeed = horizontalInput * movementSpeed;
 
@@ -76,9 +82,10 @@ public class PlayerController : MonoBehaviour
 
         velocity.x = Mathf.MoveTowards(velocity.x, targetSpeed, acceleration * Time.fixedDeltaTime);
 
-        if (isGrounded && _playerInput.JumpBuffered && _playerInput.ConsumeJump())
+        if (_jumpsRemaining > 0 && _playerInput.JumpBuffered && _playerInput.ConsumeJump())
         {
             velocity.y = jumpSpeed;
+            _jumpsRemaining--;
         }
 
         _rigidbody.linearVelocity = velocity;
