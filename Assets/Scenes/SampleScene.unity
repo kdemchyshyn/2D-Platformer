@@ -208,7 +208,7 @@ Transform:
   m_GameObject: {fileID: 56747896}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.04, y: -3.1, z: 0}
+  m_LocalPosition: {x: 8.04, y: -3.1, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -312,19 +312,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b83d6917f4e49f44182919e605c25821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  moveSpeed: 6
+  moveSpeed: 7
   groundAcceleration: 50
   groundDeceleration: 60
-  airAcceleration: 25
+  airMoveSpeedMultiplier: 0.4
+  airAcceleration: 15
   airDeceleration: 15
   groundLayers:
     serializedVersion: 2
     m_Bits: 64
   groundCheckDistance: 0.08
-  jumpSpeed: 10
-  logMovementDiagnostics: 1
-  movementLogInterval: 0.5
-  diagnosticSnapshotKey: 289
+  jumpSpeed: 5
+  spriteRenderer: {fileID: 0}
+  spriteFacesRight: 1
 --- !u!1 &228485927
 GameObject:
   m_ObjectHideFlags: 0

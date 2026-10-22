@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     private float groundDeceleration = 60f;
 
     [Header("Air Movement")]
+    [SerializeField, Range(0f, 1f)]
+    private float airMoveSpeedMultiplier = 0.5f;
     [SerializeField, Min(0f)]
     private float airAcceleration = 25f;
     [SerializeField, Min(0f)]
@@ -58,8 +60,9 @@ public class PlayerController : MonoBehaviour
         if (_collider == null) return;
 
         Vector2 velocity = _rigidbody.linearVelocity;
-        float targetSpeed = horizontalInput * moveSpeed;
         bool isGrounded = IsGrounded();
+        float movementSpeed = isGrounded ? moveSpeed : moveSpeed * airMoveSpeedMultiplier;
+        float targetSpeed = horizontalInput * movementSpeed;
 
         float acceleration;
         if (isGrounded)
@@ -72,6 +75,12 @@ public class PlayerController : MonoBehaviour
         }
 
         velocity.x = Mathf.MoveTowards(velocity.x, targetSpeed, acceleration * Time.fixedDeltaTime);
+
+        if (isGrounded && _playerInput.JumpBuffered && _playerInput.ConsumeJump())
+        {
+            velocity.y = jumpSpeed;
+        }
+
         _rigidbody.linearVelocity = velocity;
     }
 
