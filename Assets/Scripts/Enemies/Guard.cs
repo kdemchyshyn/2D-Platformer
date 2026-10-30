@@ -1,4 +1,4 @@
-﻿using DefaultNamespace.Behaviours;
+﻿using DefaultNamespace.Behaviors;
 using UnityEngine;
 
 namespace DefaultNamespace.Enemies

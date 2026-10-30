@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace DefaultNamespace.Behaviours
+namespace DefaultNamespace.Behaviors
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MovementComponent))]

@@ -40,7 +40,7 @@ namespace DefaultNamespace
         }
 
         /// <summary>Attempts a dash in horizontal direction -1 or +1.</summary>
-        public bool TryDash(float direction)
+        public bool TryDash(float direction, float distance = -1f)
         {
             throw new NotImplementedException();
         }
