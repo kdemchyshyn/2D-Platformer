@@ -48,7 +48,6 @@ namespace DefaultNamespace
                     enabled = false;
                     return;
                 }
-
                 _behaviors.Add(behavior);
             }
 
@@ -60,7 +59,9 @@ namespace DefaultNamespace
 
         protected virtual void FixedUpdate()
         {
-            throw new NotImplementedException(); 
+            EvaluateBehaviorTransitions();
+
+            CurrentBehavior?.Tick(Time.fixedDeltaTime);
         }
 
         // Implemented by each concrete enemy.
@@ -68,17 +69,30 @@ namespace DefaultNamespace
 
         protected void ChangeBehavior(IEnemyBehavior nextBehavior)
         {
-            throw new NotImplementedException();
+            if (CurrentBehavior == nextBehavior) return;
+            if (nextBehavior != null && !_behaviors.Contains(nextBehavior))
+            {
+                throw new InvalidOperationException("BaseEnemy: Behavior is not registered.");
+            }
+
+            CurrentBehavior?.Deactivate();
+            CurrentBehavior = nextBehavior;
+            CurrentBehavior?.Activate();
         }
 
         protected T GetBehavior<T>() where T : class, IEnemyBehavior
         {
-            throw new NotImplementedException();
+            foreach (IEnemyBehavior behavior in _behaviors)
+            {
+                if (behavior is T result) return result;
+            }
+            return null;
         }
 
         protected virtual void OnDisable()
         {
-            throw new NotImplementedException();
+            CurrentBehavior?.Deactivate();
+            CurrentBehavior = null;
         }
     }
 }
