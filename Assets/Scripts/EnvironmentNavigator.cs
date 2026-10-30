@@ -50,6 +50,17 @@ namespace DefaultNamespace
             );
         }
 
+        public bool IsFacingLadder(int direction)
+        {
+            ValidateDirection(direction);
+
+            return HasOverlap(
+                EnvironmentCheckType.Ladder,
+                direction,
+                optional: true
+            );
+        }
+        
         private bool HasOverlap(EnvironmentCheckType type, int direction = 0, bool optional = false)
         {
             OverlapBoxCheck check = FindCheck(type);
