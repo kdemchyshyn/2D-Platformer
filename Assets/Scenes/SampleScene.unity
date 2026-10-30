@@ -133,6 +133,8 @@ GameObject:
   - component: {fileID: 56747902}
   - component: {fileID: 56747901}
   - component: {fileID: 56747900}
+  - component: {fileID: 56747903}
+  - component: {fileID: 56747904}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -312,19 +314,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b83d6917f4e49f44182919e605c25821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  spriteRenderer: {fileID: 0}
+  spriteFacesRight: 1
+--- !u!114 &56747903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56747896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d849dd08e6b41c89e5c10c6f1268a2d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.MovementComponent
   moveSpeed: 7
   groundAcceleration: 50
   groundDeceleration: 60
   airMoveSpeedMultiplier: 0.4
   airAcceleration: 15
   airDeceleration: 15
-  groundLayers:
-    serializedVersion: 2
-    m_Bits: 64
-  groundCheckDistance: 0.08
   jumpSpeed: 5
-  spriteRenderer: {fileID: 0}
-  spriteFacesRight: 1
+  climbSpeed: 0
+--- !u!114 &56747904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56747896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ee96a9225f54896a0735a3300925587, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.EnvironmentNavigator
+  _checks:
+  - _type: 0
+    _origin: {fileID: 0}
+    _offset: {x: -0.17921444, y: -0.9217299}
+    _size: {x: 1.1792069, y: 0.08}
+    _layers:
+      serializedVersion: 2
+      m_Bits: 64
+    _includeTriggers: 0
 --- !u!1 &228485927
 GameObject:
   m_ObjectHideFlags: 0

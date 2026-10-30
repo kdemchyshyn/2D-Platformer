@@ -5,38 +5,79 @@ namespace DefaultNamespace
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(EnvironmentNavigator))]
     public class MovementComponent : MonoBehaviour
     {
+        [Header("Movement")]
+        [SerializeField, Min(0f)] private float moveSpeed = 6f;
+
+        [Header("Ground Movement")]
+        [SerializeField, Min(0f)] private float groundAcceleration = 50f;
+        [SerializeField, Min(0f)] private float groundDeceleration = 60f;
+
+        [Header("Air Movement")]
+        [SerializeField, Range(0f, 1f)] private float airMoveSpeedMultiplier = 0.5f;
+        [SerializeField, Min(0f)] private float airAcceleration = 25f;
+        [SerializeField, Min(0f)] private float airDeceleration = 15f;
+
+        [Header("Jump")]
+        [SerializeField, Min(0f)] private float jumpSpeed = 10f;
+
         [Header("Ladder")]
         [SerializeField, Min(0f)] private float climbSpeed;
 
         private Rigidbody2D _rigidbody;
         private EnvironmentNavigator _navigator;
 
-        [SerializeField] private int _jumpsRemaining = 2;
+        private int _jumpsRemaining = 2;
 
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
             _navigator = GetComponent<EnvironmentNavigator>();
         }
+
+        private void FixedUpdate()
+        {
+            if (_navigator.IsGrounded && _rigidbody.linearVelocity.y <= 0f)
+            {
+                ResetJumps();
+            }
+        }
         
         /// <summary>Ground horizontal movement. Direction: -1 to +1; 0 means no input.</summary>
         public void Move(float direction)
         {
-            throw new NotImplementedException();
+            direction = Mathf.Clamp(direction, -1f, 1f);
+            Vector2 velocity = _rigidbody.linearVelocity;
+            velocity.x = Mathf.MoveTowards(velocity.x, GetGroundTargetSpeed(direction),
+                GetGroundAcceleration(direction) * Time.fixedDeltaTime);
+            _rigidbody.linearVelocity = velocity;
         }
 
         /// <summary>Horizontal control while airborne, with separate speed and acceleration.</summary>
         public void AirControl(float direction)
         {
-            throw new NotImplementedException();
+            direction = Mathf.Clamp(direction, -1f, 1f);
+            Vector2 velocity = _rigidbody.linearVelocity;
+            velocity.x = Mathf.MoveTowards(velocity.x, GetAirTargetSpeed(direction),
+                GetAirAcceleration(direction) * Time.fixedDeltaTime);
+            _rigidbody.linearVelocity = velocity;
         }
 
         /// <summary>Attempts the first or second jump. True only if a jump actually started.</summary>
         public bool TryJump()
         {
-            throw new NotImplementedException();
+            if (_navigator.IsGrounded && _rigidbody.linearVelocity.y <= 0f)
+            {
+                ResetJumps();
+            }
+
+            if (!CanJump()) return false;
+
+            if (_jumpsRemaining >= 1) StartJump();
+
+            return true;
         }
 
         /// <summary>Attempts a dash in horizontal direction -1 or +1.</summary>
@@ -54,44 +95,42 @@ namespace DefaultNamespace
         // Movement
         private float GetGroundTargetSpeed(float direction)
         {
-            throw new NotImplementedException();
+            return direction * moveSpeed;
         }
 
         private float GetGroundAcceleration(float direction)
         {
-            throw new NotImplementedException();
+            return direction == 0f ? groundDeceleration : groundAcceleration;
         }
 
         // Air Movement
         private float GetAirTargetSpeed(float direction)
         {
-            throw new NotImplementedException();
+            return direction * moveSpeed * airMoveSpeedMultiplier;
         }
 
         private float GetAirAcceleration(float direction)
         {
-            throw new NotImplementedException();
+            return direction == 0f ? airDeceleration : airAcceleration;
         }
 
         // Jump
         private bool CanJump()
         {
-            throw new NotImplementedException();
+            return _jumpsRemaining > 0;
         }
 
         private void StartJump()
         {
-            throw new NotImplementedException();
-        }
-
-        private void StartDoubleJump()
-        {
-            throw new NotImplementedException();
+            Vector2 velocity = _rigidbody.linearVelocity;
+            velocity.y = jumpSpeed;
+            _rigidbody.linearVelocity = velocity;
+            _jumpsRemaining--;
         }
 
         private void ResetJumps()
         {
-            throw new NotImplementedException();
+            _jumpsRemaining = 2;
         }
 
         // Dash
