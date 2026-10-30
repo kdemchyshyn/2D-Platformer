@@ -24,6 +24,7 @@ namespace DefaultNamespace.Behaviors
         private bool _attempted;
 
         public bool DashStarted { get; private set; }
+        public bool IsComplete { get; private set; }
 
         public void Initialize(MovementComponent movement, EnvironmentNavigator navigator)
         {
@@ -47,11 +48,18 @@ namespace DefaultNamespace.Behaviors
             _active = true;
             _attempted = false;
             DashStarted = false;
+            IsComplete = false;
         }
 
         public void Tick(float deltaTime)
         {
-            if (!_active || _attempted) return;
+            if (!_active || IsComplete) return;
+
+            if (_attempted)
+            {
+                if (!_movement.IsDashing) IsComplete = true;
+                return;
+            }
 
             Transform target = _enemy.Target;
             if (target == null) return; 
@@ -79,6 +87,8 @@ namespace DefaultNamespace.Behaviors
 
             _attempted = true;
             DashStarted = _movement.TryDash(direction, distance);
+            
+            if (!DashStarted) IsComplete = true;
         }
 
         public void Deactivate()

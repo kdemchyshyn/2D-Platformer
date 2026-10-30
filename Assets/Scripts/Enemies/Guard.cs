@@ -20,10 +20,6 @@ namespace DefaultNamespace.Enemies
         [SerializeField, Min(0f)] private float _chargeCooldown = 2f;
         [SerializeField, Min(0f)] private float _retreatCooldown = 2f;
 
-        [Header("Retreat")]
-        [SerializeField, Min(0f)]
-        private float _retreatHoldDuration = 0.4f;
-
         private PatrolBehavior _patrol;
         private ChargeAttackBehavior _charge;
         private DashRetreatBehavior _retreat;
@@ -33,7 +29,6 @@ namespace DefaultNamespace.Enemies
 
         private float _nextChargeTime;
         private float _nextRetreatTime;
-        private float _retreatEndTime;
 
         public float DistanceToTarget =>
             Target == null
@@ -76,8 +71,7 @@ namespace DefaultNamespace.Enemies
 
             // Keep the retreat behavior active while its dash is expected
             // to be running.
-            if (CurrentBehavior == _retreat &&
-                Time.time < _retreatEndTime)
+            if (CurrentBehavior == _retreat && !_retreat.IsComplete)
             {
                 return;
             }
@@ -129,9 +123,6 @@ namespace DefaultNamespace.Enemies
         private void StartRetreat()
         {
             ChangeBehavior(_retreat);
-
-            _retreatEndTime = Time.time + _retreatHoldDuration;
-
             _nextRetreatTime = Time.time + _retreatCooldown;
         }
 
