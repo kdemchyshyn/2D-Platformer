@@ -4,11 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInput), typeof(MovementComponent), typeof(EnvironmentNavigator))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("Visuals")]
-    [SerializeField]
-    private SpriteRenderer spriteRenderer;
-    [SerializeField]
-    private bool spriteFacesRight = true;
+    private float _faceDirection = 1f;
 
     private PlayerInput _playerInput;
     private MovementComponent _movement;
@@ -19,16 +15,12 @@ public class PlayerController : MonoBehaviour
         _playerInput = GetComponent<PlayerInput>();
         _movement = GetComponent<MovementComponent>();
         _navigator = GetComponent<EnvironmentNavigator>();
-        if (spriteRenderer == null)
-        {
-            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        }
     }
 
     private void FixedUpdate()
     {
         int horizontalInput = _playerInput.Horizontal;
-        UpdateFacing(horizontalInput);
+        UpdateDirection(horizontalInput);
 
         if (_navigator.IsGrounded) _movement.Move(horizontalInput);
         else _movement.AirControl(horizontalInput);
@@ -39,10 +31,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void UpdateFacing(int horizontalInput)
+    private void UpdateDirection(float direction)
     {
-        if (spriteRenderer == null || horizontalInput == 0) return;
+        if (direction == 0 ||
+            _faceDirection == Mathf.Sign(direction))
+            return;
 
-        spriteRenderer.flipX = spriteFacesRight ? horizontalInput < 0 : horizontalInput > 0;
+        _faceDirection = Mathf.Sign(direction);
+        transform.Rotate(0f, 180f, 0f);
     }
 }
