@@ -135,6 +135,8 @@ GameObject:
   - component: {fileID: 56747900}
   - component: {fileID: 56747903}
   - component: {fileID: 56747904}
+  - component: {fileID: 56747908}
+  - component: {fileID: 56747909}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -369,6 +371,40 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 128
     _includeTriggers: 1
+--- !u!95 &56747908
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56747896}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b8465951cdcc51b4e9b44e88e824f156, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage:
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &56747909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56747896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e54f1b92ad1a43c7a9cf90e498c097e8, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.PlayerAnimationController
 --- !u!1 &228485927
 GameObject:
   m_ObjectHideFlags: 0
