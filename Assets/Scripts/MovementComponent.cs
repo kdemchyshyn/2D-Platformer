@@ -23,6 +23,10 @@ namespace DefaultNamespace
         [Header("Jump")]
         [SerializeField, Min(0f)] private float jumpSpeed = 10f;
 
+        [Header("Crouch")]
+        [SerializeField, Range(0f, 1f)] private float crouchSpeedMultiplier = 0.5f;
+        [SerializeField] private StateCollider[] _stateColliders = Array.Empty<StateCollider>();
+
         [Header("Ladder")]
         [SerializeField, Min(0f)] private float climbSpeed;
 
@@ -30,11 +34,25 @@ namespace DefaultNamespace
         private EnvironmentNavigator _navigator;
 
         private int _jumpsRemaining = 2;
+        private bool _canCrouch;
+
+        public bool IsCrouching { get; private set; }
 
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
             _navigator = GetComponent<EnvironmentNavigator>();
+
+            Collider2D standingCollider = FindCollider(ColliderState.Stand);
+            Collider2D crouchingCollider = FindCollider(ColliderState.Crouch);
+            _canCrouch = standingCollider != null && crouchingCollider != null &&
+                         standingCollider != crouchingCollider;
+
+            if (_canCrouch) SetColliderState(ColliderState.Stand);
+            else if (_stateColliders.Length > 0)
+            {
+                Debug.LogError("MovementComponent: crouching requires separate Stand and Crouch colliders.", this);
+            }
         }
 
         private void FixedUpdate()
@@ -74,9 +92,32 @@ namespace DefaultNamespace
             }
 
             if (!CanJump()) return false;
+            if (IsCrouching && !TryStand()) return false;
 
             if (_jumpsRemaining >= 1) StartJump();
 
+            return true;
+        }
+
+        /// <summary>Attempts to crouch on the ground. Requires configured Stand and Crouch colliders.</summary>
+        public bool TryCrouch()
+        {
+            if (IsCrouching) return true;
+            if (!_canCrouch || !_navigator.IsGrounded || _rigidbody.linearVelocity.y > 0f) return false;
+
+            SetColliderState(ColliderState.Crouch);
+            IsCrouching = true;
+            return true;
+        }
+
+        /// <summary>Stands up only if the configured Stand check is clear.</summary>
+        public bool TryStand()
+        {
+            if (!IsCrouching) return true;
+            if (!_navigator.CanStand()) return false;
+
+            SetColliderState(ColliderState.Stand);
+            IsCrouching = false;
             return true;
         }
 
@@ -95,7 +136,7 @@ namespace DefaultNamespace
         // Movement
         private float GetGroundTargetSpeed(float direction)
         {
-            return direction * moveSpeed;
+            return direction * moveSpeed * (IsCrouching ? crouchSpeedMultiplier : 1f);
         }
 
         private float GetGroundAcceleration(float direction)
@@ -131,6 +172,25 @@ namespace DefaultNamespace
         private void ResetJumps()
         {
             _jumpsRemaining = 2;
+        }
+
+        // Crouch
+        private Collider2D FindCollider(ColliderState state)
+        {
+            foreach (StateCollider entry in _stateColliders)
+            {
+                if (entry != null && entry.State == state) return entry.Collider;
+            }
+
+            return null;
+        }
+
+        private void SetColliderState(ColliderState state)
+        {
+            foreach (StateCollider entry in _stateColliders)
+            {
+                if (entry != null) entry.SetActive(state);
+            }
         }
 
         // Dash
