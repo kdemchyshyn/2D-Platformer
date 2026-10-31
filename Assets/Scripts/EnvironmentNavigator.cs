@@ -31,12 +31,31 @@ namespace DefaultNamespace
 
         public bool IsNearEdge(int direction)
         {
+            // ValidateDirection(direction);
+            //
+            // return !HasOverlap(
+            //     EnvironmentCheckType.Edge,
+            //     direction
+            // );
             ValidateDirection(direction);
 
-            return !HasOverlap(
+            OverlapBoxCheck check = FindCheck(EnvironmentCheckType.Edge);
+
+            Vector2 center = check.GetCenter(transform, direction);
+
+            bool hasGround = HasOverlap(
                 EnvironmentCheckType.Edge,
                 direction
             );
+
+            Debug.Log(
+                $"Edge direction: {direction}, " +
+                $"Center: {center}, " +
+                $"HasGround: {hasGround}, " +
+                $"IsGrounded: {IsGrounded}"
+            );
+
+            return !hasGround;
         }
 
         public bool IsWallAhead(int direction)
@@ -59,6 +78,51 @@ namespace DefaultNamespace
                 direction,
                 optional: true
             );
+        }
+        
+        public float GetSafeHorizontalDistance(int direction, float desiredDistance, float sampleSpacing = 0.1f)
+        {
+            ValidateDirection(direction);
+            if (desiredDistance <= 0f) return 0f;
+
+            OverlapBoxCheck edgeCheck = FindCheck(EnvironmentCheckType.Edge);
+            if (edgeCheck == null || !edgeCheck.IsValid)
+            {
+                throw new InvalidOperationException("EnvironmentNavigator: a valid Edge check is required for safe dashing.");
+            }
+
+            OverlapBoxCheck wallCheck = FindCheck(EnvironmentCheckType.Wall);
+            if (wallCheck != null && !wallCheck.IsValid)
+            {
+                throw new InvalidOperationException("EnvironmentNavigator: invalid Wall check size.");
+            }
+
+            Vector2 startEdgeCenter = edgeCheck.GetCenter(transform, direction);
+            Vector2 startWallCenter = wallCheck != null ? wallCheck.GetCenter(transform, direction) : Vector2.zero;
+
+            float step = Mathf.Max(0.02f, sampleSpacing);
+            int steps = Mathf.Max(1, Mathf.CeilToInt(desiredDistance / step));
+            float lastSafe = 0f;
+
+            for (int i = 0; i <= steps; i++)
+            {
+                float traveled = desiredDistance * i / steps;
+                Vector2 displacement = Vector2.right * (direction * traveled);
+
+                if (!HasOverlapAt(edgeCheck, startEdgeCenter + displacement))
+                {
+                    return lastSafe;
+                }
+
+                if (wallCheck != null && HasOverlapAt(wallCheck, startWallCenter + displacement))
+                {
+                    return lastSafe;
+                }
+
+                lastSafe = traveled;
+            }
+
+            return desiredDistance;
         }
         
         private bool HasOverlap(EnvironmentCheckType type, int direction = 0, bool optional = false)
@@ -98,6 +162,26 @@ namespace DefaultNamespace
                 if (hit.attachedRigidbody == _rigidbody) continue;
                 if (hit.transform.IsChildOf(transform)) continue;
 
+                return true;
+            }
+
+            return false;
+        }
+        
+        private bool HasOverlapAt(OverlapBoxCheck check, Vector2 center)
+        {
+            ContactFilter2D filter = new ContactFilter2D();
+            filter.SetLayerMask(check.Layers);
+            filter.useTriggers = check.IncludeTriggers;
+
+            _results.Clear();
+            Physics2D.OverlapBox(center, check.Size, 0f, filter, _results);
+
+            foreach (Collider2D hit in _results)
+            {
+                if (hit == null) continue;
+                if (hit.attachedRigidbody == _rigidbody) continue;
+                if (hit.transform.IsChildOf(transform)) continue;
                 return true;
             }
 
