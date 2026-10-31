@@ -77,6 +77,7 @@ namespace DefaultNamespace
 
             CurrentBehavior?.Deactivate();
             CurrentBehavior = nextBehavior;
+            Debug.Log ("CurrentBehavior: " + CurrentBehavior);
             CurrentBehavior?.Activate();
         }
 

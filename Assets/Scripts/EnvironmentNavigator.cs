@@ -31,12 +31,31 @@ namespace DefaultNamespace
 
         public bool IsNearEdge(int direction)
         {
+            // ValidateDirection(direction);
+            //
+            // return !HasOverlap(
+            //     EnvironmentCheckType.Edge,
+            //     direction
+            // );
             ValidateDirection(direction);
 
-            return !HasOverlap(
+            OverlapBoxCheck check = FindCheck(EnvironmentCheckType.Edge);
+
+            Vector2 center = check.GetCenter(transform, direction);
+
+            bool hasGround = HasOverlap(
                 EnvironmentCheckType.Edge,
                 direction
             );
+
+            Debug.Log(
+                $"Edge direction: {direction}, " +
+                $"Center: {center}, " +
+                $"HasGround: {hasGround}, " +
+                $"IsGrounded: {IsGrounded}"
+            );
+
+            return !hasGround;
         }
 
         public bool IsWallAhead(int direction)

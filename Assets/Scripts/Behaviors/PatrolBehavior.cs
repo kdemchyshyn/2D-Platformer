@@ -54,6 +54,7 @@ namespace DefaultNamespace.Behaviors
                 return;
             }
 
+            Debug.Log($"CanMove {CanMove(_direction)} direction: {_direction}");
             if (!CanMove(_direction))
             {
                 int oppositeDirection = -_direction;
