@@ -4,11 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInput), typeof(MovementComponent), typeof(EnvironmentNavigator))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("Visuals")]
-    [SerializeField]
-    private SpriteRenderer spriteRenderer;
-    [SerializeField]
-    private bool spriteFacesRight = true;
+    private float _faceDirection = 1f;
 
     private PlayerInput _playerInput;
     private MovementComponent _movement;
@@ -103,6 +99,7 @@ public class PlayerController : MonoBehaviour
 
         if (spriteRenderer == null) return;
 
-        spriteRenderer.flipX = spriteFacesRight ? horizontalInput < 0 : horizontalInput > 0;
+        _faceDirection = Mathf.Sign(direction);
+        transform.Rotate(0f, 180f, 0f);
     }
 }
