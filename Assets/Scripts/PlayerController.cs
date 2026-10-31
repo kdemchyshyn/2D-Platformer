@@ -1,107 +1,108 @@
+using DefaultNamespace;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(PlayerInput))]
+[RequireComponent(typeof(PlayerInput), typeof(MovementComponent), typeof(EnvironmentNavigator))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement")]
-    [SerializeField, Min(0f)]
-    private float moveSpeed = 6f;
-
-    [Header("Ground Movement")]
-    [SerializeField, Min(0f)]
-    private float groundAcceleration = 50f;
-    [SerializeField, Min(0f)]
-    private float groundDeceleration = 60f;
-
-    [Header("Air Movement")]
-    [SerializeField, Range(0f, 1f)]
-    private float airMoveSpeedMultiplier = 0.5f;
-    [SerializeField, Min(0f)]
-    private float airAcceleration = 25f;
-    [SerializeField, Min(0f)]
-    private float airDeceleration = 15f;
-
-    [Header("Ground Check")]
-    [SerializeField]
-    private LayerMask groundLayers = Physics2D.DefaultRaycastLayers;
-    [SerializeField, Min(0f)]
-    private float groundCheckDistance = 0.08f;
-
-    [Header("Jump")]
-    [SerializeField, Min(0f)]
-    private float jumpSpeed = 10f;
-
     [Header("Visuals")]
     [SerializeField]
     private SpriteRenderer spriteRenderer;
     [SerializeField]
     private bool spriteFacesRight = true;
 
-    private Rigidbody2D _rigidbody;
     private PlayerInput _playerInput;
-    private Collider2D _collider;
-    private int _jumpsRemaining = 2;
+    private MovementComponent _movement;
+    private EnvironmentNavigator _navigator;
+    
+    private int _facingDirection;
+    private float _ladderRegrabTime;
 
     private void Awake()
     {
-        _rigidbody = GetComponent<Rigidbody2D>();
         _playerInput = GetComponent<PlayerInput>();
-        _collider = GetComponent<Collider2D>();
+        _movement = GetComponent<MovementComponent>();
+        _navigator = GetComponent<EnvironmentNavigator>();
         if (spriteRenderer == null)
         {
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
+        _facingDirection = spriteFacesRight ? 1 : -1;
     }
 
     private void FixedUpdate()
     {
         int horizontalInput = _playerInput.Horizontal;
+        int verticalInput = _playerInput.Vertical;
+        
+        if (_movement.IsClimbing)
+        {
+            if (_playerInput.JumpBuffered)
+            {
+                _movement.Climb(0f, false);
+                if (_movement.TryJump())
+                {
+                    _playerInput.ConsumeJump();
+                }
+                _ladderRegrabTime = Time.time + 0.25f;
+                return;
+            }
+
+            // Leave when the ladder is gone or the player
+            // is standing on ground without vertical input.
+            if (!_navigator.IsFacingLadder(_facingDirection) ||
+                (_navigator.IsGrounded && verticalInput == 0))
+            {
+                _movement.Climb(0f, false);
+            }
+            else
+            {
+                _movement.Climb(verticalInput);
+                return;
+            }
+        }
+        
+        if (_movement.IsDashing) return;
+        
         UpdateFacing(horizontalInput);
 
-        if (_collider == null) return;
-
-        Vector2 velocity = _rigidbody.linearVelocity;
-        bool isGrounded = IsGrounded();
-        if (isGrounded)
+        if (_playerInput.DashBuffered && _movement.TryDash(_facingDirection))
         {
-            _jumpsRemaining = 2;
+            _playerInput.ConsumeDash();
+            return;
         }
-
-        float movementSpeed = isGrounded ? moveSpeed : moveSpeed * airMoveSpeedMultiplier;
-        float targetSpeed = horizontalInput * movementSpeed;
-
-        float acceleration;
-        if (isGrounded)
+        
+        if (verticalInput != 0 &&
+            Time.time >= _ladderRegrabTime &&
+            !_movement.IsDashing &&
+            _navigator.IsFacingLadder(_facingDirection))
         {
-            acceleration = horizontalInput == 0 ? groundDeceleration : groundAcceleration;
+            _movement.Climb(verticalInput);
+            return;
         }
-        else
+        
+        if (_navigator.IsGrounded) _movement.Move(horizontalInput);
+        else _movement.AirControl(horizontalInput);
+
+        if (_playerInput.JumpBuffered && _movement.TryJump())
         {
-            acceleration = horizontalInput == 0 ? airDeceleration : airAcceleration;
+            _playerInput.ConsumeJump();
         }
-
-        velocity.x = Mathf.MoveTowards(velocity.x, targetSpeed, acceleration * Time.fixedDeltaTime);
-
-        if (_jumpsRemaining > 0 && _playerInput.JumpBuffered && _playerInput.ConsumeJump())
-        {
-            velocity.y = jumpSpeed;
-            _jumpsRemaining--;
-        }
-
-        _rigidbody.linearVelocity = velocity;
     }
 
+    private void OnDisable()
+    {
+        if (_movement != null && _movement.IsClimbing)
+            _movement.Climb(0f, false);
+    }
+    
     private void UpdateFacing(int horizontalInput)
     {
-        if (spriteRenderer == null || horizontalInput == 0) return;
+        if (horizontalInput == 0) return;
+
+        _facingDirection = horizontalInput;
+
+        if (spriteRenderer == null) return;
 
         spriteRenderer.flipX = spriteFacesRight ? horizontalInput < 0 : horizontalInput > 0;
-    }
-
-    private bool IsGrounded()
-    {
-        Bounds bounds = _collider.bounds;
-        Vector2 origin = new Vector2(bounds.center.x, bounds.min.y - 0.01f);
-        return Physics2D.Raycast(origin, Vector2.down, groundCheckDistance + 0.01f, groundLayers);
     }
 }

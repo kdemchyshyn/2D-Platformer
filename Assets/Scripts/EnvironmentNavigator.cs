@@ -50,6 +50,17 @@ namespace DefaultNamespace
             );
         }
 
+        public bool IsFacingLadder(int direction)
+        {
+            ValidateDirection(direction);
+
+            return HasOverlap(
+                EnvironmentCheckType.Ladder,
+                direction,
+                optional: true
+            );
+        }
+        
         public float GetSafeHorizontalDistance(int direction, float desiredDistance, float sampleSpacing = 0.1f)
         {
             ValidateDirection(direction);
@@ -154,6 +165,7 @@ namespace DefaultNamespace
                 if (hit.transform.IsChildOf(transform)) continue;
                 return true;
             }
+
             return false;
         }
 
