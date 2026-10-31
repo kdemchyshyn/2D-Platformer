@@ -48,6 +48,8 @@ namespace DefaultNamespace
         
         public bool IsDashing { get; private set; }
         public bool IsClimbing { get; private set; }
+
+        public event Action JumpStarted;
         
         private void Awake()
         {
@@ -186,6 +188,7 @@ namespace DefaultNamespace
             velocity.y = jumpSpeed;
             _rigidbody.linearVelocity = velocity;
             _jumpsRemaining--;
+            JumpStarted?.Invoke();
         }
 
         private void ResetJumps()
