@@ -12,7 +12,7 @@ public class PlayerInput : MonoBehaviour
     public bool DashBuffered => _dashBufferTimer > 0f;
 
     public bool JumpHeld { get; private set; }
-    public bool CrouchHeld { get; private set; }
+    //public bool CrouchHeld { get; private set; }
     
     private float _jumpBufferTimer;
     private float _dashBufferTimer;
@@ -41,7 +41,7 @@ public class PlayerInput : MonoBehaviour
         }
         
         JumpHeld = Input.GetButton("Jump");
-        CrouchHeld = Input.GetButton("Crouch");
+        //CrouchHeld = Input.GetButton("Crouch");
     }
 
     public bool ConsumeJump()
