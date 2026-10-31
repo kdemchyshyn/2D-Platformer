@@ -262,7 +262,7 @@ MonoBehaviour:
   airMoveSpeedMultiplier: 0.5
   airAcceleration: 25
   airDeceleration: 15
-  jumpSpeed: 10
+  jumpSpeed: 5
   dashSpeed: 12
   dashDuration: 0.28
   dashCooldown: 0.7
@@ -282,7 +282,7 @@ MonoBehaviour:
   _checks:
   - _type: 0
     _origin: {fileID: 0}
-    _offset: {x: 0, y: -0.2}
+    _offset: {x: 0, y: 0}
     _size: {x: 1.7, y: 0.1}
     _layers:
       serializedVersion: 2
@@ -294,7 +294,7 @@ MonoBehaviour:
     _size: {x: 0.5, y: 0.5}
     _layers:
       serializedVersion: 2
-      m_Bits: 951
+      m_Bits: 4294967295
     _includeTriggers: 0
   - _type: 4
     _origin: {fileID: 0}
@@ -330,7 +330,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &34253157
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -514,7 +514,7 @@ Transform:
   m_GameObject: {fileID: 56747896}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.17, y: -2.99, z: 0}
+  m_LocalPosition: {x: -7.75, y: -2.99, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
