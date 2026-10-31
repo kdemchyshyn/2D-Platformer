@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private MovementComponent _movement;
     private EnvironmentNavigator _navigator;
     
+    private int _facingDirection;
     private float _ladderRegrabTime;
 
     private void Awake()
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour
         {
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
+        _facingDirection = spriteFacesRight ? 1 : -1;
     }
 
     private void FixedUpdate()
