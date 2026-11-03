@@ -12,6 +12,7 @@ namespace DefaultNamespace
         private static readonly int JumpParameter = Animator.StringToHash("Jump");
         private static readonly int DashingParameter = Animator.StringToHash("IsDashing");
         private static readonly int ClimbingParameter = Animator.StringToHash("IsClimbing");
+        private static readonly int CrouchingParameter = Animator.StringToHash("IsCrouching");
         private static readonly int ClimbSpeedParameter = Animator.StringToHash("ClimbSpeed");
 
         private Animator _animator;
@@ -49,6 +50,7 @@ namespace DefaultNamespace
             bool isClimbing = _movement.IsClimbing;
             _animator.SetBool(DashingParameter, isDashing);
             _animator.SetBool(ClimbingParameter, isClimbing);
+            _animator.SetBool(CrouchingParameter, _movement.IsCrouching);
             // Pause the ladder cycle while hanging still; climbing down uses the same cycle.
             _animator.SetFloat(ClimbSpeedParameter, isClimbing && Mathf.Abs(velocity.y) > 0.01f ? 1f : 0f);
 

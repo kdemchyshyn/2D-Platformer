@@ -65,6 +65,10 @@ public class PlayerController : MonoBehaviour
         
         UpdateFacing(horizontalInput);
 
+        bool isGrounded = _navigator.IsGrounded;
+        if (_playerInput.CrouchHeld && isGrounded) _movement.TryCrouch();
+        else _movement.TryStand();
+
         if (_playerInput.DashBuffered && _movement.TryDash(_facingDirection))
         {
             _playerInput.ConsumeDash();
@@ -72,6 +76,8 @@ public class PlayerController : MonoBehaviour
         }
         
         if (verticalInput != 0 &&
+            !_playerInput.CrouchHeld &&
+            !_movement.IsCrouching &&
             Time.time >= _ladderRegrabTime &&
             !_movement.IsDashing &&
             _navigator.IsFacingLadder(_facingDirection))
@@ -80,7 +86,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
         
-        if (_navigator.IsGrounded) _movement.Move(horizontalInput);
+        if (isGrounded) _movement.Move(horizontalInput);
         else _movement.AirControl(horizontalInput);
 
         if (_playerInput.JumpBuffered && _movement.TryJump())
