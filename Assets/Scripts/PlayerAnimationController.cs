@@ -10,6 +10,9 @@ namespace DefaultNamespace
         private static readonly int VerticalSpeedParameter = Animator.StringToHash("VerticalSpeed");
         private static readonly int GroundedParameter = Animator.StringToHash("Grounded");
         private static readonly int JumpParameter = Animator.StringToHash("Jump");
+        private static readonly int DashingParameter = Animator.StringToHash("IsDashing");
+        private static readonly int ClimbingParameter = Animator.StringToHash("IsClimbing");
+        private static readonly int ClimbSpeedParameter = Animator.StringToHash("ClimbSpeed");
 
         private Animator _animator;
         private Rigidbody2D _rigidbody;
@@ -42,16 +45,25 @@ namespace DefaultNamespace
             _animator.SetFloat(SpeedParameter, Mathf.Abs(velocity.x));
             _animator.SetFloat(VerticalSpeedParameter, velocity.y);
 
+            bool isDashing = _movement.IsDashing;
+            bool isClimbing = _movement.IsClimbing;
+            _animator.SetBool(DashingParameter, isDashing);
+            _animator.SetBool(ClimbingParameter, isClimbing);
+            // Pause the ladder cycle while hanging still; climbing down uses the same cycle.
+            _animator.SetFloat(ClimbSpeedParameter, isClimbing && Mathf.Abs(velocity.y) > 0.01f ? 1f : 0f);
+
             // The feet may still overlap the floor on the first frame of takeoff.
             bool isGrounded = !_jumpQueued && _navigator.IsGrounded && velocity.y <= 0.1f;
             _animator.SetBool(GroundedParameter, isGrounded);
 
-            if (_jumpQueued)
+            if (_jumpQueued && !isDashing && !isClimbing)
             {
                 _animator.ResetTrigger(JumpParameter);
                 _animator.SetTrigger(JumpParameter);
-                _jumpQueued = false;
             }
+            else if (isDashing || isClimbing) _animator.ResetTrigger(JumpParameter);
+
+            _jumpQueued = false;
         }
 
         private void OnJumpStarted()
