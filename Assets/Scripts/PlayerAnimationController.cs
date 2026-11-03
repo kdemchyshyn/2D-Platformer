@@ -14,6 +14,14 @@ namespace DefaultNamespace
         private static readonly int ClimbingParameter = Animator.StringToHash("IsClimbing");
         private static readonly int CrouchingParameter = Animator.StringToHash("IsCrouching");
         private static readonly int ClimbSpeedParameter = Animator.StringToHash("ClimbSpeed");
+        private static readonly int RunPlaybackSpeedParameter = Animator.StringToHash("RunPlaybackSpeed");
+        private static readonly int CrouchWalkPlaybackSpeedParameter = Animator.StringToHash("CrouchWalkPlaybackSpeed");
+
+        [Header("Ground Animation Timing")]
+        [Tooltip("Horizontal movement speed at which Run plays at its original tempo.")]
+        [SerializeField, Min(0.01f)] private float runReferenceSpeed = 7f;
+        [Tooltip("Horizontal movement speed at which CrouchWalk plays at its original tempo.")]
+        [SerializeField, Min(0.01f)] private float crouchWalkReferenceSpeed = 3.5f;
 
         private Animator _animator;
         private Rigidbody2D _rigidbody;
@@ -43,7 +51,13 @@ namespace DefaultNamespace
         private void Update()
         {
             Vector2 velocity = _rigidbody.linearVelocity;
-            _animator.SetFloat(SpeedParameter, Mathf.Abs(velocity.x));
+            float horizontalSpeed = Mathf.Abs(velocity.x);
+            _animator.SetFloat(SpeedParameter, horizontalSpeed);
+            // Scale only the walking cycles; jumps and other modes keep their own timing.
+            _animator.SetFloat(RunPlaybackSpeedParameter,
+                horizontalSpeed / Mathf.Max(0.01f, runReferenceSpeed));
+            _animator.SetFloat(CrouchWalkPlaybackSpeedParameter,
+                horizontalSpeed / Mathf.Max(0.01f, crouchWalkReferenceSpeed));
             _animator.SetFloat(VerticalSpeedParameter, velocity.y);
 
             bool isDashing = _movement.IsDashing;
