@@ -294,7 +294,7 @@ MonoBehaviour:
     _size: {x: 0.5, y: 0.5}
     _layers:
       serializedVersion: 2
-      m_Bits: 4294967295
+      m_Bits: 64
     _includeTriggers: 0
   - _type: 4
     _origin: {fileID: 0}
@@ -302,7 +302,7 @@ MonoBehaviour:
     _size: {x: 0.5, y: 0.5}
     _layers:
       serializedVersion: 2
-      m_Bits: 0
+      m_Bits: 64
     _includeTriggers: 0
 --- !u!50 &34253156
 Rigidbody2D:
