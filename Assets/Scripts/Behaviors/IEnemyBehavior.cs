@@ -1,4 +1,4 @@
-﻿namespace DefaultNamespace.Behaviours
+﻿namespace DefaultNamespace.Behaviors
 {
     public interface IEnemyBehavior
     {
