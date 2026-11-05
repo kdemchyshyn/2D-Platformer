@@ -31,12 +31,31 @@ namespace DefaultNamespace
 
         public bool IsNearEdge(int direction)
         {
+            // ValidateDirection(direction);
+            //
+            // return !HasOverlap(
+            //     EnvironmentCheckType.Edge,
+            //     direction
+            // );
             ValidateDirection(direction);
 
-            return !HasOverlap(
+            OverlapBoxCheck check = FindCheck(EnvironmentCheckType.Edge);
+
+            Vector2 center = check.GetCenter(transform, direction);
+
+            bool hasGround = HasOverlap(
                 EnvironmentCheckType.Edge,
                 direction
             );
+
+            Debug.Log(
+                $"Edge direction: {direction}, " +
+                $"Center: {center}, " +
+                $"HasGround: {hasGround}, " +
+                $"IsGrounded: {IsGrounded}"
+            );
+
+            return !hasGround;
         }
 
         public bool IsWallAhead(int direction)
@@ -50,6 +69,17 @@ namespace DefaultNamespace
             );
         }
 
+        public bool IsFacingLadder(int direction)
+        {
+            ValidateDirection(direction);
+
+            return HasOverlap(
+                EnvironmentCheckType.Ladder,
+                direction,
+                optional: true
+            );
+        }
+        
         public float GetSafeHorizontalDistance(int direction, float desiredDistance, float sampleSpacing = 0.1f)
         {
             ValidateDirection(direction);
@@ -154,6 +184,7 @@ namespace DefaultNamespace
                 if (hit.transform.IsChildOf(transform)) continue;
                 return true;
             }
+
             return false;
         }
 
