@@ -11,6 +11,8 @@ namespace DefaultNamespace.Behaviors
         [Header("Chase")]
         [SerializeField, Min(0f)] private float _stoppingDistance = 0.75f;
 
+        public float StoppingDistance => _stoppingDistance;
+
         private MovementComponent _movement;
         private EnvironmentNavigator _navigator;
         private BaseEnemy _enemy;
