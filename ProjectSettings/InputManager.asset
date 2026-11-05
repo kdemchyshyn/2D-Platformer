@@ -489,7 +489,7 @@ InputManager:
     m_Name: Crouch
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: left
+    negativeButton:
     positiveButton: s
     altNegativeButton: 
     altPositiveButton: down
