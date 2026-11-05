@@ -51,15 +51,16 @@ namespace DefaultNamespace.Enemies
                 return;
             }
 
-            float distance = Vector2.Distance(transform.position, Target.position);
-            if (distance <= _jumpRange && Navigator.IsGrounded && Time.time >= _nextJumpTime)
+            Vector2 offset = Target.position - transform.position;
+            float minimumJumpDistance = Mathf.Max(_chase.StoppingDistance, _jump.HorizontalTolerance);
+            // Charge toward a target ahead of the goblin, above its feet.
+            if (offset.y >= 0f && Mathf.Abs(offset.x) > minimumJumpDistance &&
+                offset.sqrMagnitude <= _jumpRange * _jumpRange &&
+                Navigator.IsGrounded && Time.time >= _nextJumpTime && !ReferenceEquals(CurrentBehavior, _jump))
             {
-                if (!ReferenceEquals(CurrentBehavior, _jump))
-                {
-                    ChangeBehavior(_jump);
-                    _nextJumpTime = Time.time + _jumpCooldown;
-                    return;
-                }
+                ChangeBehavior(_jump);
+                _nextJumpTime = Time.time + _jumpCooldown;
+                return;
             }
 
             ChangeBehavior(_chase);

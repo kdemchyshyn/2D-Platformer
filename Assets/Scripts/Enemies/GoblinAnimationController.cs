@@ -6,6 +6,7 @@ namespace DefaultNamespace.Enemies
     [RequireComponent(typeof(Animator), typeof(Rigidbody2D), typeof(EnvironmentNavigator))]
     public sealed class GoblinAnimationController : MonoBehaviour
     {
+        private const float VerticalSpeedTolerance = 0.1f;
         private static readonly int SpeedParameter = Animator.StringToHash("Speed");
         private static readonly int VerticalSpeedParameter = Animator.StringToHash("VerticalSpeed");
         private static readonly int GroundedParameter = Animator.StringToHash("Grounded");
@@ -26,7 +27,7 @@ namespace DefaultNamespace.Enemies
         private void Update()
         {
             Vector2 velocity = _rigidbody.linearVelocity;
-            bool isRising = velocity.y > 0f;
+            bool isRising = velocity.y > VerticalSpeedTolerance;
 
             _animator.SetFloat(SpeedParameter, Mathf.Abs(velocity.x));
             _animator.SetFloat(VerticalSpeedParameter, velocity.y);

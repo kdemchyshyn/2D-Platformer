@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2974307814060473424}
   - component: {fileID: 6407255892536424289}
   - component: {fileID: 2060824999793616404}
-  - component: {fileID: 2968381429679630102}
   - component: {fileID: 3569617952907711870}
   - component: {fileID: 3820231927284888083}
   - component: {fileID: 3323849248638581754}
@@ -20,7 +19,8 @@ GameObject:
   - component: {fileID: 6939882395936208140}
   - component: {fileID: 5017728849282887711}
   - component: {fileID: 3691326680924455601}
-  m_Layer: 0
+  - component: {fileID: 4645734849769217119}
+  m_Layer: 9
   m_Name: Goblin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,43 +129,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!70 &2968381429679630102
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 163239436885059829}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0.0625, y: 0.28125}
-  m_Size: {x: 0.375, y: 0.5625}
-  m_Direction: 0
 --- !u!114 &3569617952907711870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,23 +145,23 @@ MonoBehaviour:
   - _type: 0
     _origin: {fileID: 0}
     _offset: {x: 0, y: -0.04}
-    _size: {x: 0.55, y: 0.12}
+    _size: {x: 0.55, y: 0.14}
     _layers:
       serializedVersion: 2
       m_Bits: 64
     _includeTriggers: 0
   - _type: 3
     _origin: {fileID: 0}
-    _offset: {x: 0.55, y: -0.08}
-    _size: {x: 0.12, y: 0.16}
+    _offset: {x: 0.62, y: -0.07}
+    _size: {x: 0.16, y: 0.16}
     _layers:
       serializedVersion: 2
       m_Bits: 64
     _includeTriggers: 0
   - _type: 4
     _origin: {fileID: 0}
-    _offset: {x: 0.5, y: 0.55}
-    _size: {x: 0.12, y: 0.9}
+    _offset: {x: 0.6, y: 0.55}
+    _size: {x: 0.18, y: 0.85}
     _layers:
       serializedVersion: 2
       m_Bits: 64
@@ -218,7 +181,7 @@ MonoBehaviour:
   moveSpeed: 3
   groundAcceleration: 50
   groundDeceleration: 60
-  airMoveSpeedMultiplier: 0.8
+  airMoveSpeedMultiplier: 0.5
   airAcceleration: 25
   airDeceleration: 15
   jumpSpeed: 6
@@ -249,7 +212,7 @@ MonoBehaviour:
   _visionOrigin: {fileID: 8542976514589577866}
   _visibilityLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 320
   _jumpRange: 2.5
   _jumpCooldown: 2
 --- !u!114 &4726953793847228367
@@ -328,6 +291,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a85a15ea5d834dd2bd2cc0e8f392baea, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::DefaultNamespace.Enemies.GoblinAnimationController
+--- !u!61 &4645734849769217119
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163239436885059829}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.28125}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 2, y: 1}
+    newSize: {x: 2, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.375, y: 0.5625}
+  m_EdgeRadius: 0
 --- !u!1 &6913494181088728381
 GameObject:
   m_ObjectHideFlags: 0
@@ -337,7 +346,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8542976514589577866}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: VisionOrigin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -353,7 +362,7 @@ Transform:
   m_GameObject: {fileID: 6913494181088728381}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0625, y: 0.4, z: 0}
+  m_LocalPosition: {x: 0, y: 0.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
